@@ -5,7 +5,7 @@ from app.config import settings
 from app.database import engine, Base, SessionLocal
 from app.models import User, Role
 from app.security import hash_password
-from app.routers import auth
+from app.routers import auth, promysels, localities, wells
 from sqlalchemy import select
 
 async def seed_admin():
@@ -38,6 +38,9 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(promysels.router)
+app.include_router(localities.router)
+app.include_router(wells.router)
 
 @app.get("/health")
 async def health():
