@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
+ <defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00336f"/><stop offset=".48" stop-color="#087fce"/><stop offset="1" stop-color="#53caff"/></linearGradient>
+  <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b8efff" stop-opacity="0"/><stop offset="1" stop-color="#8ee2ff" stop-opacity=".8"/></linearGradient>
+  <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#003c82"/><stop offset=".3" stop-color="#0879c6"/><stop offset=".52" stop-color="#64d7ff"/><stop offset=".72" stop-color="#0874c3"/><stop offset="1" stop-color="#00366f"/></linearGradient>
+  <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#42bff5"/><stop offset="1" stop-color="#003a83"/></linearGradient>
+  <linearGradient id="tower" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#00346f"/><stop offset=".48" stop-color="#087fc8"/><stop offset=".72" stop-color="#2ba9ec"/><stop offset="1" stop-color="#00417f"/></linearGradient>
+  <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+  <g id="distill">
+   <rect x="0" y="35" width="92" height="300" rx="16" fill="url(#tower)" stroke="#5bd0ff" stroke-width="4"/>
+   <ellipse cx="46" cy="37" rx="46" ry="12" fill="#1689d0" stroke="#7ce0ff" stroke-width="3"/>
+   <path d="M15 75H77M15 118H77M15 161H77M15 204H77M15 247H77M15 290H77" stroke="#7bdfff" stroke-opacity=".65" stroke-width="4"/>
+   <path d="M26 50V321M66 50V321" stroke="#00396f" stroke-width="3"/>
+   <path d="M-8 105H0M92 142H119V190H92M0 224H-24V265H0" stroke="#75dcff" stroke-width="10"/>
+   <path d="M-8 105H0M92 142H119V190H92M0 224H-24V265H0" stroke="#07599e" stroke-width="5"/>
+   <path d="M-8 80H100V88H-8M-8 175H100V183H-8" stroke="#62d2ff" stroke-width="3"/>
+   <path d="M-2 28V10H94V28" stroke="#8be5ff" stroke-width="4"/>
+   <path d="M6 20H86" stroke="#003f7c" stroke-width="3"/>
+  </g>
+  <g id="pumpjack">
+   <path d="M45 165L79 57L114 165M79 57L79 165M45 165H114M61 112H98" stroke="#00366f" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M10 42L142 59L137 75L7 58Z" fill="#0877bd" stroke="#72dfff" stroke-width="4"/>
+   <path d="M18 45L2 22L8 61L25 65ZM135 59L157 40L145 78L133 76Z" fill="#00559e" stroke="#74dcff" stroke-width="3"/>
+   <path d="M80 65V184" stroke="#b2f1ff" stroke-width="4"/>
+   <path d="M66 182H94L88 193H72Z" fill="#00356e" stroke="#55caff" stroke-width="3"/>
+   <path d="M26 165H130" stroke="#00549b" stroke-width="9"/>
+   <circle cx="79" cy="58" r="9" fill="#9beaff" stroke="#004d91" stroke-width="4"/>
+  </g>
+ </defs>
+ <rect width="1920" height="1080" fill="url(#sky)"/>
+ <circle cx="1440" cy="340" r="300" fill="#4bd3ff" opacity=".18" filter="url(#glow)"/>
+ <path d="M0 350Q190 245 360 330T730 310T1080 335T1480 280T1920 250V750H0Z" fill="#1a8bd0" opacity=".26"/>
+ <path d="M0 430Q260 300 480 390T900 370T1310 360T1920 330V800H0Z" fill="#63c9f3" opacity=".23"/>
+ <path d="M0 515Q220 390 430 485T850 460T1240 455T1650 420T1920 455V850H0Z" fill="#a0e8ff" opacity=".28"/>
+ <g fill="#c5f1ff" opacity=".76"><path d="M0 480Q38 420 88 463Q112 412 158 458Q208 433 230 482Q270 474 284 519H0Z"/><path d="M1280 470Q1324 404 1383 452Q1412 392 1474 441Q1526 420 1560 467Q1614 438 1646 485H1280Z"/><path d="M1600 520Q1644 452 1704 493Q1750 435 1810 481Q1867 456 1920 502V620H1600Z"/></g>
+ <path d="M0 735L1920 650V1080H0Z" fill="url(#ground)"/>
+ <path d="M0 760L1920 680" stroke="#9ceaff" stroke-opacity=".8" stroke-width="5"/>
+ <path d="M0 810L1920 720M0 875L1920 780M0 945L1920 845M0 1015L1920 915" stroke="#7bdcff" stroke-opacity=".3" stroke-width="3"/>
+ <!-- refinery on the left -->
+ <g transform="translate(70 240)">
+  <use href="#distill" transform="translate(30 190) scale(1.05)"/>
+  <use href="#distill" transform="translate(165 95) scale(1.32)"/>
+  <use href="#distill" transform="translate(340 240) scale(.78)"/>
+  <path d="M0 535V390H55V355H105V415H150V350H215V405H285V330H350V410H410V375H470V440H530V380H580V535Z" fill="#00417e" stroke="#178bd1" stroke-width="4"/>
+  <path d="M15 430H85V455H140V420H210V470H300V435H370V460H440V420H520" stroke="#55d3ff" stroke-width="13"/>
+  <path d="M15 430H85V455H140V420H210V470H300V435H370V460H440V420H520" stroke="#00519a" stroke-width="6"/>
+  <path d="M100 320V270H126V320M255 280V215H280V280M410 350V300H434V350" stroke="#a0eaff" stroke-width="6"/>
+  <path d="M112 270V238H267V215M267 215V190H422V300" stroke="#56d1ff" stroke-width="8"/>
+  <path d="M112 270V238H267V215M267 215V190H422V300" stroke="#00549a" stroke-width="4"/>
+  <g stroke="#9deaff" stroke-width="3" opacity=".8"><path d="M30 430V510M45 430V510M60 430V510M175 430V510M190 430V510M205 430V510M355 430V510M370 430V510M385 430V510"/></g>
+ </g>
+ <!-- main pipeline, kept below the login card area -->
+ <g transform="translate(-90 690)">
+  <path d="M0 0H890Q950 0 1000 55L1080 145H0Z" fill="#003b7b" opacity=".95"/>
+  <path d="M0 14H860Q925 14 970 67L1045 145H0Z" fill="url(#steel)" stroke="#7be0ff" stroke-width="6"/>
+  <path d="M0 31H855Q910 31 950 78L1010 145" stroke="#b6f2ff" stroke-width="8" opacity=".85"/>
+  <path d="M0 97H980" stroke="#002d65" stroke-width="18" opacity=".7"/>
+  <g stroke="#7de0ff" stroke-width="9" fill="#075aa0"><path d="M145 8V132M155 8V132M335 10V136M345 10V136M525 12V139M535 12V139M715 14V141M725 14V141M885 34V142"/><path d="M130 8H170M320 10H360M510 12H550M700 14H740M870 34H900" stroke-width="5"/></g>
+  <path d="M0 145H1120" stroke="#8eeaff" stroke-width="6" opacity=".75"/>
+ </g>
+ <!-- pumpjacks and distant equipment on right -->
+ <g transform="translate(1160 520) scale(1.25)"><use href="#pumpjack"/></g>
+ <g transform="translate(1425 455) scale(1.65)"><use href="#pumpjack"/></g>
+ <g transform="translate(1710 535) scale(.95)"><use href="#pumpjack"/></g>
+ <g fill="#03447f" stroke="#41bdf1" stroke-width="4"><path d="M1180 735V615H1215V735ZM1240 735V580H1268V735ZM1290 735V640H1322V735ZM1500 735V610H1538V735ZM1555 735V565H1582V735ZM1640 735V625H1675V735ZM1780 735V590H1810V735ZM1840 735V550H1872V735Z"/></g>
+ <g stroke="#6bd8ff" stroke-width="3" opacity=".8"><path d="M1188 635H1207M1188 660H1207M1188 685H1207M1247 600H1261M1247 625H1261M1247 650H1261M1508 635H1530M1508 660H1530M1508 685H1530M1648 650H1668M1648 675H1668M1648 700H1668M1787 615H1803M1787 640H1803M1847 575H1865M1847 600H1865"/></g>
+ <!-- atmospheric glow and reflective streaks -->
+ <path d="M0 865Q420 815 820 860T1920 840V1080H0Z" fill="#003a7a" opacity=".28"/>
+ <path d="M0 890Q420 850 840 890T1920 870" stroke="#7ee3ff" stroke-width="5" stroke-opacity=".38"/>
+ <path d="M0 960Q300 925 600 965T1200 955T1920 940" stroke="#4ec9ff" stroke-width="8" stroke-opacity=".24"/>
+ <path d="M0 1030Q300 1005 650 1032T1320 1025T1920 1008" stroke="#b4f0ff" stroke-width="3" stroke-opacity=".28"/>
+ <rect width="1920" height="1080" fill="url(#haze)"/>
+ <rect width="1920" height="1080" fill="#00366f" opacity=".08"/>
+</svg>
