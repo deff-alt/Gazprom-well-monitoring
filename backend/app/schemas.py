@@ -196,3 +196,30 @@ class UserAdminOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+# ============ ТЕЛЕМЕТРИЯ ============
+
+class TelemetryIn(BaseModel):
+    well_id: int
+    ts: datetime
+    pressure_before_choke: Decimal | None = None
+    temperature_before_choke: Decimal | None = None
+    pressure_after_choke: Decimal | None = None
+    temperature_after_choke: Decimal | None = None
+    bottomhole_pressure: Decimal | None = None
+    flow_rate_gas: Decimal | None = None
+    flow_rate_liquid: Decimal | None = None
+    water_cut: Decimal | None = None
+    vibration: Decimal | None = None
+
+
+class TelemetryOut(TelemetryIn):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class TelemetryPage(BaseModel):
+    items: list[TelemetryOut]
+    total: int
