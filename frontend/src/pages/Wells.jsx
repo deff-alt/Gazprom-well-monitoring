@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Layout from '../components/Layout'
 import { useAuth } from '../auth'
 import { api } from '../api'
+import MapPicker from '../components/MapPicker'
 
 const STATUS_LABELS = {
   active: 'В работе',
@@ -324,8 +325,24 @@ export default function Wells() {
               </div>
 
               <div className="wm-field wm-form-full">
-                <label>Местоположение (координаты)</label>
-                <input name="location" value={form.location} onChange={handleField} placeholder="45.1234, 38.5678" />
+                <label>Местоположение (описание)</label>
+                <input name="location" value={form.location} onChange={handleField} placeholder="Куст №3, 250 м от дороги" />
+              </div>
+
+              <div className="wm-field wm-form-full">
+                <label>Координаты</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <input name="latitude" placeholder="Широта" value={form.latitude} onChange={handleField} />
+                  <input name="longitude" placeholder="Долгота" value={form.longitude} onChange={handleField} />
+                </div>
+              </div>
+
+              <div className="wm-field wm-form-full">
+                <MapPicker
+                  latitude={form.latitude ? Number(form.latitude) : null}
+                  longitude={form.longitude ? Number(form.longitude) : null}
+                  onChange={({ latitude, longitude }) => setForm(f => ({ ...f, latitude, longitude }))}
+                />
               </div>
 
               <div className="wm-field">

@@ -16,7 +16,6 @@ async def list_localities(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Список месторождений. Доступно всем авторизованным."""
     result = await db.execute(select(Locality).order_by(Locality.id))
     return result.scalars().all()
 
@@ -41,14 +40,13 @@ async def create_locality(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_roles(Role.ADMIN, Role.ENGINEER)),
 ):
-    """Создание месторождения. Только admin и engineer."""
     existing = (await db.execute(
         select(Locality).where(Locality.name == data.name)
     )).scalar_one_or_none()
     if existing:
         raise HTTPException(status.HTTP_409_CONFLICT, "Месторождение с таким названием уже существует")
 
-    locality = Locality(name=data.name, region=data.region)
+    locality = Locality(**data.model_dump())
     db.add(locality)
     await db.commit()
     await db.refresh(locality)
@@ -68,15 +66,15 @@ async def update_locality(
     if not locality:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Месторождение не найдено")
 
-    if data.name is not None:
+    update_data = data.model_dump(exclude_unset=True)
+    if "name" in update_data:
         duplicate = (await db.execute(
-            select(Locality).where(Locality.name == data.name, Locality.id != locality_id)
+            select(Locality).where(Locality.name == update_data["name"], Locality.id != locality_id)
         )).scalar_one_or_none()
         if duplicate:
             raise HTTPException(status.HTTP_409_CONFLICT, "Месторождение с таким названием уже существует")
-        locality.name = data.name
-    if data.region is not None:
-        locality.region = data.region
+    for k, v in update_data.items():
+        setattr(locality, k, v)
 
     await db.commit()
     await db.refresh(locality)
@@ -89,17 +87,12 @@ async def delete_locality(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_roles(Role.ADMIN)),
 ):
-    """
-    Удаление месторождения. Только admin.
-    Запрещено, если внутри есть скважины (RESTRICT).
-    """
     locality = (await db.execute(
         select(Locality).where(Locality.id == locality_id)
     )).scalar_one_or_none()
     if not locality:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Месторождение не найдено")
 
-    # Проверяем, есть ли скважины внутри
     wells_count = (await db.execute(
         select(func.count(Well.id)).where(Well.locality_id == locality_id)
     )).scalar_one()

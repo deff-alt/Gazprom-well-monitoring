@@ -47,7 +47,7 @@ async def create_promysel(
     if existing:
         raise HTTPException(status.HTTP_409_CONFLICT, "Промысел с таким названием уже существует")
 
-    promysel = Promysel(name=data.name, region=data.region)
+    promysel = Promysel(**data.model_dump())
     db.add(promysel)
     await db.commit()
     await db.refresh(promysel)
@@ -67,15 +67,15 @@ async def update_promysel(
     if not promysel:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Промысел не найден")
 
-    if data.name is not None:
+    update_data = data.model_dump(exclude_unset=True)
+    if "name" in update_data:
         duplicate = (await db.execute(
-            select(Promysel).where(Promysel.name == data.name, Promysel.id != promysel_id)
+            select(Promysel).where(Promysel.name == update_data["name"], Promysel.id != promysel_id)
         )).scalar_one_or_none()
         if duplicate:
             raise HTTPException(status.HTTP_409_CONFLICT, "Промысел с таким названием уже существует")
-        promysel.name = data.name
-    if data.region is not None:
-        promysel.region = data.region
+    for k, v in update_data.items():
+        setattr(promysel, k, v)
 
     await db.commit()
     await db.refresh(promysel)

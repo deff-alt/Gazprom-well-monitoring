@@ -75,4 +75,8 @@ export const api = {
   createPromysel:   (data) => request('/promysels', { method: 'POST', body: JSON.stringify(data) }),
   updatePromysel:   (id, data) => request(`/promysels/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deletePromysel:   (id) => request(`/promysels/${id}`, { method: 'DELETE' }),
+  listUsers:    () => request('/users'),
+  createUser:   (data) => request('/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateUser:   (id, data) => request(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  deleteUser:   (id) => request(`/users/${id}`, { method: 'DELETE' }),
 }

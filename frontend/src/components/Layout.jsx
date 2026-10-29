@@ -7,6 +7,7 @@ const NAV = [
   { to: '/wells', label: 'Скважины' },
   { to: '/localities', label: 'Месторождения' },
   { to: '/promysels', label: 'Промыслы' },
+  { to: '/users', label: 'Пользователи', adminOnly: true },
 ]
 
 export default function Layout({ children }) {
@@ -17,6 +18,9 @@ export default function Layout({ children }) {
     logout()
     navigate('/login', { replace: true })
   }
+
+  // Фильтруем пункты меню: пункты с adminOnly видны только админу
+  const visibleNav = NAV.filter(item => !item.adminOnly || user?.role === 'admin')
 
   return (
     <main className="placeholder-screen">
@@ -39,7 +43,7 @@ export default function Layout({ children }) {
       </header>
 
       <nav className="wm-nav">
-        {NAV.map(item => (
+        {visibleNav.map(item => (
           <NavLink
             key={item.to}
             to={item.to}

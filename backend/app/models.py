@@ -58,11 +58,14 @@ class Promysel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    code: Mapped[str | None] = mapped_column(String(32))
     region: Mapped[str | None] = mapped_column(String(255))
+    address: Mapped[str | None] = mapped_column(String(255))
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
 
     wells: Mapped[list["Well"]] = relationship(back_populates="promysel")
     users: Mapped[list["User"]] = relationship(back_populates="promysel")
-
 
 class User(Base):
     __tablename__ = "users"
@@ -88,9 +91,13 @@ class Locality(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     region: Mapped[str] = mapped_column(String(255), nullable=False)
+    field_type: Mapped[str | None] = mapped_column(String(64))
+    discovery_year: Mapped[int | None] = mapped_column(Integer)
+    area_km2: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
 
     wells: Mapped[list["Well"]] = relationship(back_populates="locality", cascade="all, delete-orphan")
-
 
 class Well(Base):
     __tablename__ = "wells"
@@ -103,6 +110,8 @@ class Well(Base):
     type: Mapped[WellType] = mapped_column(Enum(WellType), nullable=False)
     status: Mapped[WellStatus] = mapped_column(Enum(WellStatus), default=WellStatus.ACTIVE)
     location: Mapped[str | None] = mapped_column(String(255))
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
 
     depth: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
     hanger_diameter: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
@@ -196,9 +205,17 @@ class Telemetry(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     well_id: Mapped[int] = mapped_column(ForeignKey("wells.id", ondelete="CASCADE"), nullable=False)
     ts: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    buffer_pressure: Mapped[Decimal | None] = mapped_column(Numeric(10, 3))
+
+    # До штуцерной камеры (устьевые параметры)
+    pressure_before_choke: Mapped[Decimal | None] = mapped_column(Numeric(10, 3))
+    temperature_before_choke: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+
+    # После штуцерной камеры (параметры в выкидной линии)
+    pressure_after_choke: Mapped[Decimal | None] = mapped_column(Numeric(10, 3))
+    temperature_after_choke: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+
+    # Прочие параметры (для ML)
     bottomhole_pressure: Mapped[Decimal | None] = mapped_column(Numeric(10, 3))
-    temperature: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
     flow_rate_gas: Mapped[Decimal | None] = mapped_column(Numeric(12, 3))
     flow_rate_liquid: Mapped[Decimal | None] = mapped_column(Numeric(12, 3))
     water_cut: Mapped[Decimal | None] = mapped_column(Numeric(5, 2))
