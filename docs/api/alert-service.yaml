@@ -1,0 +1,134 @@
+openapi: 3.1.0
+info:
+  title: alert-service
+  version: 1.0.0
+  description: Жизненный цикл алертов — создание, назначение, закрытие
+servers:
+  - url: http://localhost:8084
+tags:
+  - name: public
+  - name: internal
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/alerts:
+    get:
+      tags: [public]
+      summary: Список алертов
+      parameters:
+        - in: query
+          name: status
+          schema: { type: string, enum: [new, in_progress, resolved, dismissed] }
+        - in: query
+          name: severity
+          schema: { type: string, enum: [info, warning, critical] }
+        - in: query
+          name: wellId
+          schema: { type: integer }
+        - in: query
+          name: page
+          schema: { type: integer, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, default: 20, maximum: 100 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AlertPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/alerts/{id}:
+    get:
+      tags: [public]
+      summary: Получить алерт
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Alert' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [public]
+      summary: Обновить статус / назначить ответственного / закрыть
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AlertUpdate' }
+      responses:
+        '200':
+          description: Алерт обновлён
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Alert' }
+        '409':
+          description: Конфликт статусов (например, попытка закрыть уже закрытый алерт)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Alert:
+      type: object
+      properties:
+        id: { type: integer }
+        wellId: { type: integer }
+        wellNumber: { type: string }
+        createdAt: { type: string, format: date-time }
+        parameter: { type: string }
+        anomalyScore: { type: number }
+        severity: { type: string, enum: [info, warning, critical] }
+        status: { type: string, enum: [new, in_progress, resolved, dismissed] }
+        assignedTo: { type: integer, nullable: true }
+        assignedToName: { type: string, nullable: true }
+        sourceEventId: { type: string, format: uuid }
+        description: { type: string, nullable: true }
+        resolutionComment: { type: string, nullable: true }
+    AlertUpdate:
+      type: object
+      properties:
+        status: { type: string, enum: [new, in_progress, resolved, dismissed] }
+        assignedTo: { type: integer, nullable: true }
+        resolutionComment: { type: string, nullable: true }
+    AlertPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Alert' }
+        total: { type: integer }
+    Problem:
+      type: object
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+  responses:
+    Unauthorized:
+      description: Требуется авторизация
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    NotFound:
+      description: Не найдено
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }

@@ -1,0 +1,125 @@
+openapi: 3.1.0
+info:
+  title: ml-diagnostics-service
+  version: 1.0.0
+  description: Обучение и применение ML-моделей для обнаружения аномалий
+servers:
+  - url: http://localhost:8083
+tags:
+  - name: public
+  - name: internal
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/predict:
+    post:
+      tags: [public]
+      summary: Запустить проверку скважины по кнопке
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PredictRequest' }
+      responses:
+        '200':
+          description: Результат инференса
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PredictResponse' }
+  /api/v1/models:
+    get:
+      tags: [public]
+      summary: Список зарегистрированных моделей
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ModelInfo' }
+    post:
+      tags: [public]
+      summary: Запустить переобучение модели (только admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modelType: { type: string, enum: [IsolationForest, LSTMAutoencoder] }
+                trainFrom: { type: string, format: date-time }
+                trainTo: { type: string, format: date-time }
+      responses:
+        '202':
+          description: Обучение запущено (асинхронно)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TrainingJob' }
+        '403':
+          description: Нет прав (не admin)
+  /internal/v1/processed-events/{eventId}:
+    get:
+      tags: [internal]
+      summary: Проверить, обработано ли событие (идемпотентность)
+      security:
+        - serviceToken: []
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processed: { type: boolean }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    serviceToken:
+      type: apiKey
+      in: header
+      name: X-Service-Token
+  schemas:
+    PredictRequest:
+      type: object
+      required: [wellId]
+      properties:
+        wellId: { type: integer }
+        window: { type: string, enum: [1h, 24h, 7d], default: 24h }
+    PredictResponse:
+      type: object
+      properties:
+        wellId: { type: integer }
+        isAnomaly: { type: boolean }
+        anomalyScore: { type: number, minimum: 0, maximum: 1 }
+        parameter: { type: string, nullable: true }
+        modelVersion: { type: string }
+    ModelInfo:
+      type: object
+      properties:
+        id: { type: integer }
+        modelType: { type: string }
+        version: { type: string }
+        trainedAt: { type: string, format: date-time }
+        metrics:
+          type: object
+          properties:
+            precision: { type: number }
+            recall: { type: number }
+            f1: { type: number }
+    TrainingJob:
+      type: object
+      properties:
+        jobId: { type: string, format: uuid }
+        status: { type: string, enum: [queued, running, done, failed] }
+        startedAt: { type: string, format: date-time }

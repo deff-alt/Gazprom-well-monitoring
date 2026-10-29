@@ -1,0 +1,127 @@
+openapi: 3.1.0
+info:
+  title: telemetry-service
+  version: 1.0.0
+  description: Приём, хранение и агрегация телеметрии с датчиков скважин
+servers:
+  - url: http://localhost:8082
+tags:
+  - name: public
+  - name: internal
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/telemetry/{wellId}:
+    get:
+      tags: [public]
+      summary: Получить телеметрию по скважине за период
+      parameters:
+        - in: path
+          name: wellId
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: window
+          schema: { type: string, enum: [1h, 24h, 7d, 30d], default: 24h }
+        - in: query
+          name: page
+          schema: { type: integer, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, default: 100, maximum: 1000 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TelemetryPage' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /internal/v1/telemetry:
+    post:
+      tags: [internal]
+      summary: Приём одной точки телеметрии от шлюза
+      security:
+        - serviceToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TelemetryPoint' }
+      responses:
+        '201':
+          description: Точка сохранена, событие telemetry.recorded опубликовано
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /internal/v1/telemetry/{wellId}:
+    get:
+      tags: [internal]
+      summary: Окно телеметрии для ML-инференса
+      security:
+        - serviceToken: []
+      parameters:
+        - in: path
+          name: wellId
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: window
+          required: true
+          schema: { type: string, enum: [1h, 24h, 7d] }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TelemetryPoint' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    serviceToken:
+      type: apiKey
+      in: header
+      name: X-Service-Token
+  schemas:
+    TelemetryPoint:
+      type: object
+      required: [wellId, ts]
+      properties:
+        wellId: { type: integer }
+        ts: { type: string, format: date-time }
+        pressureBeforeChoke: { type: number, nullable: true }
+        temperatureBeforeChoke: { type: number, nullable: true }
+        pressureAfterChoke: { type: number, nullable: true }
+        temperatureAfterChoke: { type: number, nullable: true }
+        bottomholePressure: { type: number, nullable: true }
+        flowRateGas: { type: number, nullable: true }
+        flowRateLiquid: { type: number, nullable: true }
+        waterCut: { type: number, nullable: true }
+        vibration: { type: number, nullable: true }
+    TelemetryPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/TelemetryPoint' }
+        total: { type: integer }
+    Problem:
+      type: object
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+  responses:
+    NotFound:
+      description: Не найдено
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ValidationError:
+      description: Ошибка валидации
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }

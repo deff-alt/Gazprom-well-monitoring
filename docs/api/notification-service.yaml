@@ -1,0 +1,77 @@
+openapi: 3.1.0
+info:
+  title: notification-service
+  version: 1.0.0
+  description: Отправка уведомлений по алертам (email, telegram). Сервис работает в основном асинхронно, но имеет ручной эндпоинт для тестов
+servers:
+  - url: http://localhost:8086
+tags:
+  - name: internal
+security:
+  - serviceToken: []
+paths:
+  /internal/v1/notifications/test:
+    post:
+      tags: [internal]
+      summary: Тестовая отправка уведомления (для smoke-тестов)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TestNotification' }
+      responses:
+        '202':
+          description: Уведомление поставлено в очередь
+        '422':
+          description: Ошибка валидации
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+  /internal/v1/notifications/{alertId}:
+    get:
+      tags: [internal]
+      summary: История отправок по алерту
+      parameters:
+        - in: path
+          name: alertId
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/NotificationLog' }
+components:
+  securitySchemes:
+    serviceToken:
+      type: apiKey
+      in: header
+      name: X-Service-Token
+  schemas:
+    TestNotification:
+      type: object
+      required: [channel, recipient]
+      properties:
+        channel: { type: string, enum: [email, telegram] }
+        recipient: { type: string }
+        subject: { type: string }
+        body: { type: string }
+    NotificationLog:
+      type: object
+      properties:
+        id: { type: string }
+        alertId: { type: integer }
+        channel: { type: string, enum: [email, telegram] }
+        sentAt: { type: string, format: date-time }
+        status: { type: string, enum: [sent, failed] }
+        error: { type: string, nullable: true }
+    Problem:
+      type: object
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }

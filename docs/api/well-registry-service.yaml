@@ -1,0 +1,196 @@
+openapi: 3.1.0
+info:
+  title: well-registry-service
+  version: 1.0.0
+  description: Учёт скважин, месторождений и промыслов
+servers:
+  - url: http://localhost:8081
+    description: Локальная разработка
+tags:
+  - name: public
+    description: Внешние эндпоинты (для клиента через Gateway)
+  - name: internal
+    description: Внутренние эндпоинты (для других сервисов)
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/wells:
+    get:
+      tags: [public]
+      summary: Список скважин
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 0, minimum: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, default: 20, minimum: 1, maximum: 100 }
+        - in: query
+          name: promysel_id
+          schema: { type: integer }
+        - in: query
+          name: status
+          schema: { type: string, enum: [active, in_repair, suspended, plugged] }
+      responses:
+        '200':
+          description: Страница скважин
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WellPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [public]
+      summary: Создать скважину
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WellCreate' }
+      responses:
+        '201':
+          description: Скважина создана
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Well' }
+        '409':
+          description: Скважина с таким номером уже существует
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+  /api/v1/localities:
+    get:
+      tags: [public]
+      summary: Список месторождений
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Locality' }
+  /api/v1/promysels:
+    get:
+      tags: [public]
+      summary: Список промыслов
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Promysel' }
+  /internal/v1/wells/{id}:
+    get:
+      tags: [internal]
+      summary: Получить скважину (для других сервисов)
+      security:
+        - serviceToken: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Well' }
+        '404': { $ref: '#/components/responses/NotFound' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    serviceToken:
+      type: apiKey
+      in: header
+      name: X-Service-Token
+  schemas:
+    Well:
+      type: object
+      properties:
+        id: { type: integer }
+        well_number: { type: string }
+        locality_id: { type: integer }
+        locality_name: { type: string }
+        promysel_id: { type: integer, nullable: true }
+        promysel_name: { type: string, nullable: true }
+        type: { type: string, enum: [Добывающая, Нагнетательная, Разведочная] }
+        status: { type: string, enum: [active, in_repair, suspended, plugged] }
+        depth: { type: number, nullable: true }
+        latitude: { type: number, nullable: true }
+        longitude: { type: number, nullable: true }
+    WellPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Well' }
+        total: { type: integer }
+    WellCreate:
+      type: object
+      required: [well_number, locality_id, type]
+      properties:
+        well_number: { type: string, maxLength: 50 }
+        locality_id: { type: integer }
+        promysel_id: { type: integer, nullable: true }
+        type: { type: string, enum: [Добывающая, Нагнетательная, Разведочная] }
+        status: { type: string, enum: [active, in_repair, suspended, plugged], default: active }
+        depth: { type: number, nullable: true }
+        latitude: { type: number, nullable: true, minimum: -90, maximum: 90 }
+        longitude: { type: number, nullable: true, minimum: -180, maximum: 180 }
+    Locality:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        region: { type: string }
+        field_type: { type: string, nullable: true }
+        discovery_year: { type: integer, nullable: true }
+        area_km2: { type: number, nullable: true }
+        latitude: { type: number, nullable: true }
+        longitude: { type: number, nullable: true }
+    Promysel:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        code: { type: string, nullable: true }
+        region: { type: string, nullable: true }
+        address: { type: string, nullable: true }
+        latitude: { type: number, nullable: true }
+        longitude: { type: number, nullable: true }
+    Problem:
+      type: object
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string, format: uri }
+  responses:
+    Unauthorized:
+      description: Требуется авторизация
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    NotFound:
+      description: Не найдено
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ValidationError:
+      description: Ошибка валидации
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }

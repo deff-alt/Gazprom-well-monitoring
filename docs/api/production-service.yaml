@@ -1,0 +1,113 @@
+openapi: 3.1.0
+info:
+  title: production-service
+  version: 1.0.0
+  description: Замеры дебита, экспертизы, капремонты
+servers:
+  - url: http://localhost:8085
+tags:
+  - name: public
+  - name: internal
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/production/{wellId}:
+    get:
+      tags: [public]
+      summary: Суточные замеры дебита по скважине
+      parameters:
+        - in: path
+          name: wellId
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: from
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ProductionRate' }
+  /api/v1/workovers:
+    post:
+      tags: [public]
+      summary: Запланировать капремонт
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WorkoverCreate' }
+      responses:
+        '201':
+          description: Ремонт создан
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Workover' }
+  /internal/v1/workovers/{wellId}:
+    get:
+      tags: [internal]
+      summary: Плановые ремонты по скважине (для alert-service)
+      security:
+        - serviceToken: []
+      parameters:
+        - in: path
+          name: wellId
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Workover' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    serviceToken:
+      type: apiKey
+      in: header
+      name: X-Service-Token
+  schemas:
+    ProductionRate:
+      type: object
+      properties:
+        id: { type: integer }
+        wellId: { type: integer }
+        measureDate: { type: string, format: date }
+        dailyRate: { type: number }
+        comment: { type: string, nullable: true }
+    Workover:
+      type: object
+      properties:
+        id: { type: integer }
+        wellId: { type: integer }
+        workType: { type: string }
+        plannedStartDate: { type: string, format: date }
+        plannedEndDate: { type: string, format: date, nullable: true }
+        actualStartDate: { type: string, format: date, nullable: true }
+        actualEndDate: { type: string, format: date, nullable: true }
+        status: { type: string, enum: [Запланирован, В работе, Завершен, Отменен] }
+    WorkoverCreate:
+      type: object
+      required: [wellId, workType, plannedStartDate]
+      properties:
+        wellId: { type: integer }
+        workType: { type: string }
+        plannedStartDate: { type: string, format: date }
+        plannedEndDate: { type: string, format: date, nullable: true }

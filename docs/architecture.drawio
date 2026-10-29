@@ -1,0 +1,187 @@
+<mxfile host="app.diagrams.net" modified="2026-10-29T00:00:00.000Z" agent="manual" version="24.0.0">
+  <diagram name="Architecture" id="arch-1">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="client" value="Клиент&#10;(React SPA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="700" y="40" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="gateway" value="API Gateway&#10;(Nginx)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="700" y="140" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="keycloak" value="Keycloak&#10;(OIDC / JWT)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1050" y="140" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="registry" value="well-registry-service&#10;(скважины, месторождения,&#10;промыслы)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="80" y="280" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="telemetry" value="telemetry-service&#10;(приём и хранение&#10;телеметрии)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="320" y="280" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ml" value="ml-diagnostics-service&#10;(Isolation Forest,&#10;обнаружение аномалий)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="560" y="280" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="alert" value="alert-service&#10;(жизненный цикл&#10;алертов)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="800" y="280" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="production" value="production-service&#10;(дебиты, экспертизы,&#10;ремонты)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1040" y="280" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="notification" value="notification-service&#10;(email / telegram)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1280" y="280" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="kafka" value="Apache Kafka&#10;(события: telemetry, diagnostics, alerts, registry)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="420" y="440" width="720" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pg-registry" value="PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="110" y="620" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="timescale" value="TimescaleDB&#10;(телеметрия)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="350" y="620" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="minio" value="MinIO / S3&#10;(артефакты моделей)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="590" y="620" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pg-alert" value="PostgreSQL&#10;(алерты)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="830" y="620" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pg-prod" value="PostgreSQL&#10;(производство)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1070" y="620" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mongo" value="MongoDB&#10;(лог уведомлений)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1310" y="620" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-client-gw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="client" target="gateway">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-client-gw" value="HTTPS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10" vertex="1" connectable="0" parent="e-client-gw">
+          <mxGeometry x="-0.3" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-gw-keycloak" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="gateway" target="keycloak">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-gw-keycloak" value="проверка JWT" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10" vertex="1" connectable="0" parent="e-gw-keycloak">
+          <mxGeometry x="-0.3" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-gw-registry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="gateway" target="registry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-gw-registry" value="GET /api/v1/wells" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9" vertex="1" connectable="0" parent="e-gw-registry">
+          <mxGeometry x="-0.3" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-gw-telemetry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="gateway" target="telemetry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-gw-telemetry" value="GET /api/v1/telemetry/{id}" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9" vertex="1" connectable="0" parent="e-gw-telemetry">
+          <mxGeometry x="-0.3" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-gw-ml" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="gateway" target="ml">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-gw-ml" value="POST /api/v1/predict" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9" vertex="1" connectable="0" parent="e-gw-ml">
+          <mxGeometry x="-0.3" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-gw-alert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="gateway" target="alert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-gw-alert" value="GET /api/v1/alerts" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9" vertex="1" connectable="0" parent="e-gw-alert">
+          <mxGeometry x="-0.3" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-gw-prod" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="gateway" target="production">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-gw-prod" value="GET /api/v1/production/{id}" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9" vertex="1" connectable="0" parent="e-gw-prod">
+          <mxGeometry x="-0.3" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-telemetry-ml" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2" edge="1" parent="1" source="telemetry" target="ml">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l-telemetry-ml" value="GET /internal/v1/telemetry/{id}" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9" vertex="1" connectable="0" parent="e-telemetry-ml">
+          <mxGeometry x="-0.2" y="0" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-alert-registry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;dashed=1" edge="1" parent="1" source="alert" target="registry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-registry-kafka" value="well.created&#10;well.deleted" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;strokeWidth=2;strokeColor=#d6b656" edge="1" parent="1" source="registry" target="kafka">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="180" y="400" /><mxPoint x="180" y="475" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-telemetry-kafka" value="telemetry.recorded" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeWidth=2;strokeColor=#d6b656" edge="1" parent="1" source="telemetry" target="kafka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-ml-kafka" value="anomaly.detected" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeWidth=2;strokeColor=#d6b656" edge="1" parent="1" source="ml" target="kafka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-kafka-alert" value="anomaly.detected" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;strokeWidth=2;strokeColor=#d6b656" edge="1" parent="1" source="kafka" target="alert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-alert-kafka" value="alert.created&#10;alert.resolved" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;dashed=1;strokeWidth=2;strokeColor=#d6b656" edge="1" parent="1" source="alert" target="kafka">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-kafka-notification" value="alert.*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;strokeWidth=2;strokeColor=#d6b656" edge="1" parent="1" source="kafka" target="notification">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-kafka-prod" value="well.created" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.9;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;strokeWidth=2;strokeColor=#d6b656" edge="1" parent="1" source="kafka" target="production">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-registry-pg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1" edge="1" parent="1" source="registry" target="pg-registry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-telemetry-timescale" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1" edge="1" parent="1" source="telemetry" target="timescale">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ml-minio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1" edge="1" parent="1" source="ml" target="minio">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-alert-pg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1" edge="1" parent="1" source="alert" target="pg-alert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-prod-pg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1" edge="1" parent="1" source="production" target="pg-prod">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-notification-mongo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1" edge="1" parent="1" source="notification" target="mongo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-sync" value="Сплошная стрелка — синхронный вызов (REST)&#10;Пунктирная стрелка — асинхронное событие (Kafka)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="60" y="880" width="600" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
