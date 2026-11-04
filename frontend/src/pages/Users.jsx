@@ -8,6 +8,11 @@ const ROLES = {
   engineer: 'Инженер-технолог',
   head: 'Начальник промысла',
   operator: 'Оператор',
+  kipia_engineer: 'Инженер КИПиА',
+  power_engineer: 'Инженер-энергетик',
+  mechanical_engineer: 'Инженер-механик',
+  geologist: 'Геолог',
+  dispatcher: 'Диспетчер',
 }
 
 const EMPTY_FORM = {
@@ -262,16 +267,21 @@ export default function Users() {
               <div className="wm-field">
                 <label>Роль *</label>
                 <select
-                  value={form.role}
-                  onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
-                  required
-                  disabled={editingId === me?.id}
-                >
-                  <option value="operator">Оператор</option>
-                  <option value="engineer">Инженер-технолог</option>
-                  <option value="head">Начальник промысла</option>
-                  <option value="admin">Администратор</option>
-                </select>
+  value={form.role}
+  onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+  required
+  disabled={editingId === me?.id}
+>
+  <option value="operator">Оператор</option>
+  <option value="engineer">Инженер-технолог</option>
+  <option value="head">Начальник промысла</option>
+  <option value="kipia_engineer">Инженер КИПиА</option>
+  <option value="power_engineer">Инженер-энергетик</option>
+  <option value="mechanical_engineer">Инженер-механик</option>
+  <option value="geologist">Геолог</option>
+  <option value="dispatcher">Диспетчер</option>
+  <option value="admin">Администратор</option>
+</select>
               </div>
               <div className="wm-field">
                 <label>Промысел (для начальника обязателен)</label>

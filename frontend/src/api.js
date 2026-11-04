@@ -79,4 +79,11 @@ export const api = {
   createUser:   (data) => request('/users', { method: 'POST', body: JSON.stringify(data) }),
   updateUser:   (id, data) => request(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deleteUser:   (id) => request(`/users/${id}`, { method: 'DELETE' }),
+  // Dashboard
+  dashboardKpi: () => request('/api/v1/dashboard/kpi'),
+  dashboardWellsMap: () => request('/api/v1/dashboard/wells-map'),
+  dashboardAlertsLast: () => request('/api/v1/dashboard/alerts-last'),
+  getWell: (id) => request(`/wells/${id}`),
+  listTelemetry: (wellId, window = '24h', page = 0, size = 100) =>
+    request(`/api/v1/telemetry/${wellId}?window=${window}&page=${page}&size=${size}`),
 }

@@ -6,6 +6,7 @@ import Wells from './pages/Wells'
 import Localities from './pages/Localities'
 import Promysels from './pages/Promysels'
 import Users from './pages/Users'
+import WellDetail from './pages/WellDetail'
 
 function Protected({ children }) {
   const { user, loading } = useAuth()
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/wells" element={<Protected><Wells /></Protected>} />
           <Route path="/localities" element={<Protected><Localities /></Protected>} />
           <Route path="/promysels" element={<Protected><Promysels /></Protected>} />
+          <Route path="/wells/:id" element={<Protected><WellDetail /></Protected>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

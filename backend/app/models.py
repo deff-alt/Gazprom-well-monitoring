@@ -16,6 +16,11 @@ class Role(str, enum.Enum):
     ENGINEER = "engineer"
     HEAD = "head"
     OPERATOR = "operator"
+    KIPIA_ENGINEER = "kipia_engineer"
+    POWER_ENGINEER = "power_engineer"
+    MECHANICAL_ENGINEER = "mechanical_engineer"
+    GEOLOGIST = "geologist"
+    DISPATCHER = "dispatcher"
 
 
 class WellType(str, enum.Enum):

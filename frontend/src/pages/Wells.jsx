@@ -24,6 +24,8 @@ const EMPTY_FORM = {
   type: 'Добывающая',
   status: 'active',
   location: '',
+  latitude: '',
+  longitude: '',
   depth: '',
   hanger_diameter: '',
   drilling_start_date: '',
@@ -89,7 +91,11 @@ export default function Wells() {
 
   const openCreate = () => {
     setEditingId(null)
-    setForm({ ...EMPTY_FORM, locality_id: localities[0]?.id || '', promysel_id: promysels[0]?.id || '' })
+    setForm({
+      ...EMPTY_FORM,
+      locality_id: localities[0]?.id || '',
+      promysel_id: promysels[0]?.id || '',
+    })
     setModalError('')
     setModalOpen(true)
   }
@@ -103,6 +109,8 @@ export default function Wells() {
       type: well.type,
       status: well.status,
       location: well.location || '',
+      latitude: well.latitude ?? '',
+      longitude: well.longitude ?? '',
       depth: well.depth ?? '',
       hanger_diameter: well.hanger_diameter ?? '',
       drilling_start_date: well.drilling_start_date || '',
@@ -142,6 +150,8 @@ export default function Wells() {
       type: form.type,
       status: form.status,
       location: str(form.location),
+      latitude: num(form.latitude),
+      longitude: num(form.longitude),
       depth: num(form.depth),
       hanger_diameter: num(form.hanger_diameter),
       drilling_start_date: str(form.drilling_start_date),
@@ -205,8 +215,8 @@ export default function Wells() {
 
       {!localities.length && !loading && (
         <div className="wm-error">
-          Сначала создайте хотя бы одно месторождение — без него нельзя добавить скважину.
-          {' '}<a href="/localities" style={{ color: '#b7f1ff', textDecoration: 'underline' }}>Перейти к месторождениям</a>
+          Сначала создайте хотя бы одно месторождение — без него нельзя добавить скважину.{' '}
+          <a href="/localities" style={{ color: '#b7f1ff', textDecoration: 'underline' }}>Перейти к месторождениям</a>
         </div>
       )}
 
@@ -286,12 +296,12 @@ export default function Wells() {
             <form onSubmit={handleSubmit} className="wm-form-grid">
               <div className="wm-field wm-form-full">
                 <label>Номер скважины *</label>
-                <input name="well_number" value={form.well_number} onChange={handleField} required disabled={!!editingId} />
+                <input name="well_number" value={form.well_number ?? ''} onChange={handleField} required disabled={!!editingId} />
               </div>
 
               <div className="wm-field">
                 <label>Месторождение *</label>
-                <select name="locality_id" value={form.locality_id} onChange={handleField} required>
+                <select name="locality_id" value={form.locality_id ?? ''} onChange={handleField} required>
                   <option value="">— выберите —</option>
                   {localities.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
                 </select>
@@ -299,7 +309,7 @@ export default function Wells() {
 
               <div className="wm-field">
                 <label>Промысел</label>
-                <select name="promysel_id" value={form.promysel_id} onChange={handleField}>
+                <select name="promysel_id" value={form.promysel_id ?? ''} onChange={handleField}>
                   <option value="">— не указан —</option>
                   {promysels.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
@@ -307,7 +317,7 @@ export default function Wells() {
 
               <div className="wm-field">
                 <label>Тип</label>
-                <select name="type" value={form.type} onChange={handleField}>
+                <select name="type" value={form.type ?? 'Добывающая'} onChange={handleField}>
                   <option value="Добывающая">Добывающая</option>
                   <option value="Нагнетательная">Нагнетательная</option>
                   <option value="Разведочная">Разведочная</option>
@@ -316,7 +326,7 @@ export default function Wells() {
 
               <div className="wm-field">
                 <label>Статус</label>
-                <select name="status" value={form.status} onChange={handleField}>
+                <select name="status" value={form.status ?? 'active'} onChange={handleField}>
                   <option value="active">В работе</option>
                   <option value="in_repair">В ремонте</option>
                   <option value="suspended">Приостановлена</option>
@@ -326,14 +336,14 @@ export default function Wells() {
 
               <div className="wm-field wm-form-full">
                 <label>Местоположение (описание)</label>
-                <input name="location" value={form.location} onChange={handleField} placeholder="Куст №3, 250 м от дороги" />
+                <input name="location" value={form.location ?? ''} onChange={handleField} placeholder="Куст №3, 250 м от дороги" />
               </div>
 
               <div className="wm-field wm-form-full">
                 <label>Координаты</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                  <input name="latitude" placeholder="Широта" value={form.latitude} onChange={handleField} />
-                  <input name="longitude" placeholder="Долгота" value={form.longitude} onChange={handleField} />
+                  <input name="latitude" placeholder="Широта" value={form.latitude ?? ''} onChange={handleField} />
+                  <input name="longitude" placeholder="Долгота" value={form.longitude ?? ''} onChange={handleField} />
                 </div>
               </div>
 
@@ -347,62 +357,62 @@ export default function Wells() {
 
               <div className="wm-field">
                 <label>Глубина, м</label>
-                <input name="depth" type="number" step="0.01" value={form.depth} onChange={handleField} />
+                <input name="depth" type="number" step="0.01" value={form.depth ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Диаметр подвески, мм</label>
-                <input name="hanger_diameter" type="number" step="0.01" value={form.hanger_diameter} onChange={handleField} />
+                <input name="hanger_diameter" type="number" step="0.01" value={form.hanger_diameter ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Начало бурения</label>
-                <input name="drilling_start_date" type="date" value={form.drilling_start_date} onChange={handleField} />
+                <input name="drilling_start_date" type="date" value={form.drilling_start_date ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Окончание бурения</label>
-                <input name="drilling_end_date" type="date" value={form.drilling_end_date} onChange={handleField} />
+                <input name="drilling_end_date" type="date" value={form.drilling_end_date ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Сдача в эксплуатацию</label>
-                <input name="commissioning_date" type="date" value={form.commissioning_date} onChange={handleField} />
+                <input name="commissioning_date" type="date" value={form.commissioning_date ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Инвентарный номер</label>
-                <input name="inventory_number" value={form.inventory_number} onChange={handleField} />
+                <input name="inventory_number" value={form.inventory_number ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Пластовое давление, МПа</label>
-                <input name="reservoir_pressure" type="number" step="0.01" value={form.reservoir_pressure} onChange={handleField} />
+                <input name="reservoir_pressure" type="number" step="0.01" value={form.reservoir_pressure ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Буферное давление, МПа</label>
-                <input name="buffer_pressure" type="number" step="0.01" value={form.buffer_pressure} onChange={handleField} />
+                <input name="buffer_pressure" type="number" step="0.01" value={form.buffer_pressure ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Межколонное давление, МПа</label>
-                <input name="casing_pressure" type="number" step="0.01" value={form.casing_pressure} onChange={handleField} />
+                <input name="casing_pressure" type="number" step="0.01" value={form.casing_pressure ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Температура, °C</label>
-                <input name="temperature" type="number" step="0.01" value={form.temperature} onChange={handleField} />
+                <input name="temperature" type="number" step="0.01" value={form.temperature ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Диаметр штуцера, мм</label>
-                <input name="choke_diameter" type="number" step="0.01" value={form.choke_diameter} onChange={handleField} />
+                <input name="choke_diameter" type="number" step="0.01" value={form.choke_diameter ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-field">
                 <label>Расчётный срок, лет</label>
-                <input name="planned_lifetime" type="number" value={form.planned_lifetime} onChange={handleField} />
+                <input name="planned_lifetime" type="number" value={form.planned_lifetime ?? ''} onChange={handleField} />
               </div>
 
               <div className="wm-modal-actions wm-form-full">

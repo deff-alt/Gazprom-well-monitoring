@@ -493,3 +493,6 @@
   .wm-modal { padding: 20px; }
   .wm-content { padding: 20px 18px 40px; }
 }
+.leaflet-attribution-flag {
+  display: none !important;
+}
