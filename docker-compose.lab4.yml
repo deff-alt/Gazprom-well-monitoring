@@ -30,6 +30,8 @@ services:
     environment:
       SERVICE_NAME: well-registry
       DB_PATH: /data/registry.db
+    ports:
+      - "8000:8000"
     volumes:
       - ./services/well-registry:/app
       - registry_data:/data
