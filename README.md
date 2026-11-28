@@ -56,3 +56,49 @@ docker compose up -d --build
 ## Проверки
 
 Python-модули проходят `compileall`; JSON package manifest и Docker Compose YAML проверены. Полную сборку Vite и запуск контейнеров следует выполнить локально командой выше после установки npm-зависимостей.
+
+
+## Лабораторная работа №4 — запуск микросервисов
+
+Запускать отдельно от основной ВКР:
+
+```powershell
+docker compose -f docker-compose.lab4.yml up -d --build
+docker compose -f docker-compose.lab4.yml ps
+```
+
+API Gateway: `http://localhost:8090`; RabbitMQ Management: `http://localhost:15672` (`guest/guest`). Коллекция Postman: `postman/Well-Monitor-Lab4.postman_collection.json`. Сценарии: `docs/demo-scenarios.md`. Остановка: `docker compose -f docker-compose.lab4.yml down` (без `-v`, чтобы сохранить SQLite volumes).
+
+## Лабораторная работа №4 — микросервисная архитектура
+
+ЛР4 запускается отдельно от основной ВКР и не изменяет её Compose-конфигурацию. Для неё используются четыре бизнес-сервиса (`well-registry`, `telemetry`, `ml-diagnostics`, `alert`), отдельные SQLite-хранилища, RabbitMQ, Nginx API Gateway и мок внешнего сервиса уведомлений.
+
+### Запуск ЛР4
+
+```powershell
+docker compose -f docker-compose.lab4.yml up -d --build
+docker compose -f docker-compose.lab4.yml ps
+```
+
+Единая точка входа: `http://localhost:8090`. RabbitMQ Management: `http://localhost:15672` (учётные данные по умолчанию `guest` / `guest`).
+
+Postman-коллекция: `postman/Well-Monitor-Lab4.postman_collection.json`. Подробные шаги демонстрации: `docs/demo-scenarios.md`. Отчёт: `services/LAB4-REPORT.md`.
+
+### Автоматические тесты ЛР4
+
+Тесты расположены в каталогах `services/<service>/tests`. Запуск из PowerShell из корня репозитория:
+
+```powershell
+.\services\run-lab4-tests.ps1
+```
+
+Скрипт устанавливает тестовые зависимости из `requirements-dev.txt` каждого сервиса и запускает его unit/API-тесты отдельно. Для запуска требуется доступ к Python package index при первой установке зависимостей. Для интеграционной проверки работающего стенда сначала запустите Compose, затем выполните `python -m pip install -r services/integration-tests/requirements.txt` и `python -m pytest -q services/integration-tests`.
+
+### Остановка ЛР4
+
+```powershell
+docker compose -f docker-compose.lab4.yml down
+```
+
+Команда не удаляет Docker volumes с данными. Не используйте `-v`, если хотите сохранить тестовые записи.
+

@@ -31,7 +31,7 @@ services:
       SERVICE_NAME: well-registry
       DB_PATH: /data/registry.db
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./services/well-registry:/app
       - registry_data:/data
@@ -45,6 +45,7 @@ services:
       DB_PATH: /data/telemetry.db
       REGISTRY_URL: http://well-registry:8000
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      ML_URL: http://ml-diagnostics:8000
     volumes:
       - ./services/telemetry:/app
       - telemetry_data:/data
@@ -89,6 +90,8 @@ services:
       rabbitmq:
         condition: service_healthy
       well-registry:
+        condition: service_started
+      notification-mock:
         condition: service_started
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 

@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "Well Monitor — ЛР4",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8090"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health checks",
+      "item": [
+        {
+          "name": "Registry",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health/registry"
+          }
+        },
+        {
+          "name": "Telemetry",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health/telemetry"
+          }
+        },
+        {
+          "name": "ML",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health/ml"
+          }
+        },
+        {
+          "name": "Alert",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health/alert"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registry",
+      "item": [
+        {
+          "name": "List wells",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/wells"
+          }
+        },
+        {
+          "name": "Create well (idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "well-create-1001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"well_number\":\"1001\",\"locality_id\":1,\"promysel_id\":1,\"type\":\"Добывающая\",\"status\":\"active\",\"depth\":2700,\"reservoir_pressure\":17.8,\"temperature\":65,\"latitude\":45.2,\"longitude\":38.9}"
+            },
+            "url": "{{baseUrl}}/api/v1/wells"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Telemetry + ML + Saga",
+      "item": [
+        {
+          "name": "Ingest telemetry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "telemetry-1001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"well_id\":1,\"pressure\":10.5,\"temperature\":91,\"flow_rate\":7.2,\"vibration\":8.1}"
+            },
+            "url": "{{baseUrl}}/api/v1/telemetry"
+          }
+        },
+        {
+          "name": "Run diagnosis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"measurement_id\":1}"
+            },
+            "url": "{{baseUrl}}/api/v1/predict"
+          }
+        },
+        {
+          "name": "Saga workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "saga-1001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"well_id\":1,\"pressure\":10.5,\"temperature\":91,\"flow_rate\":7.2,\"vibration\":8.1}"
+            },
+            "url": "{{baseUrl}}/api/v1/workflows/diagnose"
+          }
+        },
+        {
+          "name": "List alerts",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/alerts"
+          }
+        }
+      ]
+    }
+  ]
+}
