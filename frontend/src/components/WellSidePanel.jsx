@@ -12,9 +12,13 @@ export default function WellSidePanel({ well, onClose }) {
 
   if (!well) {
     return (
-      <div className="wm-card" style={{ padding: 24, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <div style={{ color: '#b8d9f1', fontSize: 13 }}>
-          Выберите скважину на карте,<br/>чтобы увидеть подробности
+      <div className="wm-card well-side-panel well-side-empty">
+        <div className="well-empty-image" aria-hidden="true" />
+        <div className="well-empty-content">
+          <span className="well-empty-icon">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42s14-13 14-24a14 14 0 1 0-28 0c0 11 14 24 14 24Z"/><circle cx="24" cy="18" r="5"/></svg>
+          </span>
+          <span>Выберите скважину на карте,<br/>чтобы увидеть подробности</span>
         </div>
       </div>
     )
@@ -32,7 +36,7 @@ export default function WellSidePanel({ well, onClose }) {
   ]
 
   return (
-    <div className="wm-card" style={{ padding: 20, height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="wm-card well-side-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
         <div>
           <div style={{ fontSize: 11, letterSpacing: 1, color: '#9dc7e6', fontWeight: 700 }}>СКВАЖИНА</div>

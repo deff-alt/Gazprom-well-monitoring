@@ -93,13 +93,7 @@ export default function MapViewer({ wells, selectedId, onSelect }) {
   return (
     <div
       ref={containerRef}
-      style={{
-        height: '100%',
-        minHeight: 420,
-        borderRadius: 14,
-        overflow: 'hidden',
-        border: '1px solid rgba(189,234,255,.25)',
-      }}
+      className="well-map"
     />
   )
 }

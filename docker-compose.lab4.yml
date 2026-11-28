@@ -1,0 +1,111 @@
+services:
+  # --- Брокер сообщений ---
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # web UI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- API Gateway ---
+  gateway:
+    image: nginx:1.27-alpine
+    ports:
+      - "8090:80"       # чтобы не конфликтовать с монолитом на 8000
+    volumes:
+      - ./gateway.lab4.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - well-registry
+      - telemetry
+      - ml-diagnostics
+      - alert
+
+  # --- 1. Реестр скважин ---
+  well-registry:
+    build: ./services/well-registry
+    environment:
+      SERVICE_NAME: well-registry
+      DB_PATH: /data/registry.db
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./services/well-registry:/app
+      - registry_data:/data
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # --- 2. Телеметрия ---
+  telemetry:
+    build: ./services/telemetry
+    environment:
+      SERVICE_NAME: telemetry
+      DB_PATH: /data/telemetry.db
+      REGISTRY_URL: http://well-registry:8000
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      ML_URL: http://ml-diagnostics:8000
+    volumes:
+      - ./services/telemetry:/app
+      - telemetry_data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      well-registry:
+        condition: service_started
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # --- 3. ML-диагностика ---
+  ml-diagnostics:
+    build: ./services/ml-diagnostics
+    environment:
+      SERVICE_NAME: ml-diagnostics
+      DB_PATH: /data/diagnostics.db
+      TELEMETRY_URL: http://telemetry:8000
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+    volumes:
+      - ./services/ml-diagnostics:/app
+      - diagnostics_data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      telemetry:
+        condition: service_started
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # --- 4. Алерты ---
+  alert:
+    build: ./services/alert
+    environment:
+      SERVICE_NAME: alert
+      DB_PATH: /data/alerts.db
+      REGISTRY_URL: http://well-registry:8000
+      NOTIFICATION_URL: http://notification-mock:8000
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+    volumes:
+      - ./services/alert:/app
+      - alerts_data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      well-registry:
+        condition: service_started
+      notification-mock:
+        condition: service_started
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # --- Мок notification (по методичке допустимо) ---
+  notification-mock:
+    build: ./mocks/notification
+    environment:
+      SERVICE_NAME: notification-mock
+    volumes:
+      - ./mocks/notification:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  registry_data:
+  telemetry_data:
+  diagnostics_data:
+  alerts_data:
